@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CookieConsent from '../components/CookieConsent.astro';
+import SiteLoader from '../components/SiteLoader.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -25,6 +26,7 @@ const { title, description, pageClass = '' } = Astro.props;
     <title>{title}</title>
   </head>
   <body class={pageClass}>
+    <SiteLoader />
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="page-progress" aria-hidden="true"><span></span></div>
     <Header />

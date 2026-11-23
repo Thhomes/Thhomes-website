@@ -1,0 +1,20 @@
+<div class="site-loader" data-site-loader aria-hidden="true">
+  <div class="site-loader-mark">
+    <img src="/Images/logo/thhome-white-logo.png" alt="" width="2172" height="724" />
+    <span></span>
+  </div>
+</div>
+<script is:inline>
+  const loader = document.querySelector('[data-site-loader]');
+  const dismissLoader = () => {
+    loader?.setAttribute('data-leaving', '');
+    setTimeout(() => loader?.remove(), 520);
+  };
+  if (sessionStorage.getItem('thhomes-intro-seen')) {
+    loader?.remove();
+  } else {
+    sessionStorage.setItem('thhomes-intro-seen', 'true');
+    addEventListener('load', dismissLoader, { once: true });
+    setTimeout(dismissLoader, 2400);
+  }
+</script>
