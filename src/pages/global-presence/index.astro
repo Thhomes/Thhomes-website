@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArrowIcon from '../../components/ArrowIcon.astro';
 
 const regions = [
   { id:'africa', name:'Africa', status:'Initial market', copy:'Current project focus in Abuja, with future coverage across West, East, Southern and North Africa.' },
@@ -42,7 +43,7 @@ const regions = [
             <span class="region-status" data-region-status>{regions[0].status}</span>
             <h3 data-region-name>{regions[0].name}</h3>
             <p data-region-copy>{regions[0].copy}</p>
-            <a class="text-link light" href="/consultation">International project enquiry <span aria-hidden="true">↗</span></a>
+            <a class="text-link light" href="/consultation">International project enquiry <ArrowIcon /></a>
           </div>
         </div>
       </div>

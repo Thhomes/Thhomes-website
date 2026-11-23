@@ -79,5 +79,10 @@
 [data-theme=dark] .about-opening .lead-copy{color:#f2f4f7}
 
 /* Native-friendly international enquiry fields */
-.form-fieldset{margin:0;padding:0;border:0}.phone-input{display:grid;grid-template-columns:minmax(112px,.34fr) 1fr;gap:1rem}.phone-input select,.phone-input input{min-width:0}.field select:disabled{color:var(--muted);cursor:not-allowed;opacity:.7}.field input[aria-invalid=true],.field select[aria-invalid=true],.field textarea[aria-invalid=true]{border-color:#a54141;box-shadow:0 2px 0 #a54141}.field-error:not(:empty){padding-top:.15rem}.mobile-theme-toggle{width:46px;padding:0;grid-template-columns:1fr}.mobile-theme-toggle [data-theme-label]{display:none}
-@media(max-width:760px){.field input,.field select,.field textarea{min-height:54px;font-size:16px}.phone-input{grid-template-columns:118px 1fr}.mobile-theme-toggle{align-self:flex-start}}
+.form-fieldset{margin:0;padding:0;border:0}.phone-input{display:grid;grid-template-columns:minmax(132px,.38fr) 1fr;gap:1rem}.phone-input select,.phone-input input{min-width:0}.dial-code-control{position:relative}.dial-code-control select{width:100%;padding-left:2.7rem}.dial-code-flag{position:absolute;z-index:1;top:50%;left:1rem;width:1.25rem;border-radius:2px;transform:translateY(-50%);pointer-events:none}.field select:disabled{color:var(--muted);cursor:not-allowed;opacity:.7}.field input[aria-invalid=true],.field select[aria-invalid=true],.field textarea[aria-invalid=true]{border-color:#a54141;box-shadow:0 2px 0 #a54141}.field-error:not(:empty){padding-top:.15rem}.mobile-theme-toggle{width:46px;padding:0;grid-template-columns:1fr}.mobile-theme-toggle [data-theme-label]{display:none}
+@media(max-width:760px){.field input,.field select,.field textarea{min-height:54px;font-size:16px}.phone-input{grid-template-columns:132px 1fr}.mobile-theme-toggle{align-self:flex-start}}
+
+/* Consistent vector icons replace text glyphs in interactive links. */
+.link-icon{width:1.15em;height:1.15em;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform 200ms var(--ease-out)}
+.text-link:hover .link-icon{transform:translate(3px,-3px)}
+.service-arrow .link-icon{width:1.2rem;height:1.2rem}

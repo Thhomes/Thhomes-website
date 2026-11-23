@@ -2,8 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Country, State } from 'country-state-city';
 import { getCountryCallingCode, type CountryCode } from 'libphonenumber-js';
+import 'flag-icons/css/flag-icons.min.css';
 
 const services = ['Architecture & design','Construction','Property development','Project management','Investment & partnerships'];
+const defaultPhoneCountry = 'GB';
 const dialCodeFor = (isoCode: string, fallback: string) => {
   try { return `+${getCountryCallingCode(isoCode as CountryCode)}`; }
   catch { return fallback.startsWith('+') ? fallback : `+${fallback.split(/\s|and/)[0]}`; }
@@ -32,7 +34,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
           <fieldset class="field-wide form-fieldset"><legend class="fieldset-label">What do you need help with?</legend><div class="radio-group">{services.map((service, index) => <div class="radio-option"><input id={`service-${index}`} type="radio" name="service" value={service} required /><label for={`service-${index}`}>{service}</label></div>)}</div><span class="field-error" data-service-error></span></fieldset>
           <div class="field"><label for="full-name">Full name</label><input id="full-name" name="fullName" autocomplete="name" required /><span class="field-error"></span></div>
           <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="email-error" required /><span class="field-error" id="email-error"></span></div>
-          <div class="field field-wide"><label for="phone">Phone <span class="form-note">optional</span></label><div class="phone-input"><select id="phone-code" name="phoneCode" aria-label="International dialling code"><option value="">Code</option>{countries.map((country) => <option value={country.dialCode} data-country-code={country.code}>{country.code} {country.dialCode}</option>)}</select><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-error" /></div><span class="field-error" id="phone-error"></span></div>
+          <div class="field field-wide"><label for="phone">Phone <span class="form-note">optional</span></label><div class="phone-input"><div class="dial-code-control"><span class="dial-code-flag fi fi-gb" data-dial-code-flag aria-hidden="true"></span><select id="phone-code" name="phoneCountry" aria-label="International dialling code" autocomplete="tel-country-code"><option value="">Code</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode} selected={country.code === defaultPhoneCountry}>{country.code} {country.dialCode}</option>)}</select></div><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-error" /></div><span class="field-error" id="phone-error"></span></div>
           <div class="field"><label for="country">Country</label><select id="country" name="country" autocomplete="country" required><option value="">Select country</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode}>{country.name}</option>)}</select><span class="field-error"></span></div>
           <div class="field"><label for="state">State or region</label><select id="state" name="state" autocomplete="address-level1" disabled required><option value="">Select a country first</option></select><span class="field-error"></span></div>
           <div class="field"><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" required /><span class="field-error"></span></div>
@@ -55,6 +57,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
     const country = form?.querySelector<HTMLSelectElement>('#country');
     const state = form?.querySelector<HTMLSelectElement>('#state');
     const dialCode = form?.querySelector<HTMLSelectElement>('#phone-code');
+    const dialCodeFlag = form?.querySelector<HTMLElement>('[data-dial-code-flag]');
     const phone = form?.querySelector<HTMLInputElement>('#phone');
     const email = form?.querySelector<HTMLInputElement>('#email');
     const locationData = JSON.parse(document.querySelector('#location-data')?.textContent || '{}') as Record<string, Array<{ code: string; name: string }>>;
@@ -74,11 +77,16 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
     };
     const phoneError = () => {
       if (!phone?.value.trim()) return '';
-      const parsed = parsePhoneNumberFromString(`${dialCode?.value || ''}${phone.value.replace(/^0+/, '')}`);
+      const selectedDialCode = dialCode?.selectedOptions[0]?.dataset.dialCode || '';
+      const parsed = parsePhoneNumberFromString(`${selectedDialCode}${phone.value.replace(/^0+/, '')}`);
       return parsed?.isValid() ? '' : 'Enter a valid phone number for the selected international code.';
     };
     const validateEmail = () => { if (email) setError(email, emailError()); };
     const validatePhone = () => { if (phone) setError(phone, phoneError()); };
+    const updateDialCodeFlag = () => {
+      const countryCode = dialCode?.value.toLowerCase();
+      if (dialCodeFlag) dialCodeFlag.className = countryCode ? `dial-code-flag fi fi-${countryCode}` : 'dial-code-flag';
+    };
 
     country?.addEventListener('change', () => {
       const states = locationData[country.value] || [];
@@ -89,13 +97,14 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
         state.disabled = false;
       }
       const selected = country.selectedOptions[0];
-      if (dialCode && selected?.dataset.dialCode) dialCode.value = selected.dataset.dialCode;
+      if (dialCode && selected?.dataset.dialCode) dialCode.value = country.value;
+      updateDialCodeFlag();
       validatePhone();
     });
     email?.addEventListener('blur', validateEmail);
     email?.addEventListener('input', () => { if (email.getAttribute('aria-invalid') === 'true') validateEmail(); });
     phone?.addEventListener('blur', validatePhone);
-    dialCode?.addEventListener('change', validatePhone);
+    dialCode?.addEventListener('change', () => { updateDialCodeFlag(); validatePhone(); });
 
     form?.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -118,6 +127,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
         if (status) status.textContent = `Thank you. Your ${selectedService?.value.toLowerCase()} enquiry is ready to route to the correct team once the final form endpoint is connected.`;
         form.reset();
         if (state) { state.disabled = true; state.innerHTML = '<option value="">Select a country first</option>'; }
+        updateDialCodeFlag();
       }
     });
   </script>
