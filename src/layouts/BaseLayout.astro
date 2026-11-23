@@ -1,0 +1,86 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  pageClass?: string;
+}
+
+const { title, description, pageClass = '' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0e1e3a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title}</title>
+  </head>
+  <body class={pageClass}>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="page-progress" aria-hidden="true"><span></span></div>
+    <Header />
+    <main id="main-content"><slot /></main>
+    <Footer />
+    <script is:inline>
+      const root = document.documentElement;
+      const updateProgress = () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        root.style.setProperty('--scroll-progress', max > 0 ? `${scrollY / max}` : '0');
+      };
+      updateProgress();
+      addEventListener('scroll', updateProgress, { passive: true });
+
+      const menuButton = document.querySelector('[data-menu-button]');
+      const menu = document.querySelector('[data-menu]');
+      menuButton?.addEventListener('click', () => {
+        const open = menuButton.getAttribute('aria-expanded') === 'true';
+        menuButton.setAttribute('aria-expanded', String(!open));
+        menu?.toggleAttribute('data-open', !open);
+        document.body.classList.toggle('menu-open', !open);
+      });
+
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reveals = document.querySelectorAll('[data-reveal]');
+      if (reduceMotion) {
+        reveals.forEach((element) => element.setAttribute('data-visible', ''));
+      } else {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.setAttribute('data-visible', '');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -10% 0px' });
+        reveals.forEach((element) => observer.observe(element));
+      }
+
+      const ambientVideos = document.querySelectorAll('[data-ambient-video]');
+      if (reduceMotion) {
+        ambientVideos.forEach((video) => video.pause());
+      } else {
+        const videoObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && document.visibilityState === 'visible') {
+              entry.target.play().catch(() => {});
+            } else {
+              entry.target.pause();
+            }
+          });
+        }, { rootMargin: '160px 0px', threshold: 0.12 });
+        ambientVideos.forEach((video) => videoObserver.observe(video));
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) ambientVideos.forEach((video) => video.pause());
+        });
+      }
+    </script>
+  </body>
+</html>
