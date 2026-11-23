@@ -9,7 +9,31 @@ const process = [['Discover','We clarify the land, ambition, constraints and mea
   <section class="studio-film" data-reveal><video data-ambient-video muted loop playsinline preload="none" poster="/videos/posters/architecture-design.webp" aria-label="Architectural drawings and design materials"><source src="/videos/architecture-design.mp4" type="video/mp4" /></video><div class="studio-film-copy"><p>Architecture is where every project begins to become real.</p><span>Design · Detail · Delivery</span></div></section>
   <section class="section services" id="services"><div class="section-inner"><div class="section-head" data-reveal><h2>Designed as one continuous process.</h2><p>Four connected capabilities remove the gaps between vision, design, commercial decisions and delivery.</p></div><div class="service-list" data-reveal>{services.map(([title, copy]) => <a class="service-row" href="/consultation"><h3>{title}</h3><p>{copy}</p><span class="service-arrow" aria-hidden="true">→</span></a>)}</div></div></section>
   <section class="section projects" id="projects"><div class="section-inner"><div class="section-head" data-reveal><h2>Spaces shaped around a bigger idea.</h2><p>Residential, commercial and development-led work explored through proportion, material, context and long-term value.</p></div><div class="project-stage" data-reveal><article class="project-main"><img src="/Images/classic-home.jpeg" alt="Contemporary multi-storey residence" width="1728" height="1080" loading="lazy" /><div class="project-caption"><h3>Courtyard House</h3><span>View project</span></div></article><div class="project-side"><article class="project-small"><img src="/Images/pool-home.jpeg" alt="Modern residence with swimming pool" width="680" height="453" loading="lazy" /><div class="project-caption"><h3>Garden Residence</h3></div></article><article class="project-small"><img src="/Images/3d-home.jpeg" alt="Architectural view of a contemporary villa" width="1024" height="768" loading="lazy" /><div class="project-caption"><h3>Horizon Villas</h3></div></article></div></div></div></section>
-  <section class="section process"><div class="section-inner"><div class="process-intro"><div class="process-heading" data-reveal><h2>A clear road from ambition to arrival.</h2><p>Every stage has a purpose, a decision and an accountable owner. That is how complexity becomes confidence.</p></div><div class="process-film" data-reveal><video data-ambient-video muted loop playsinline preload="none" poster="/videos/posters/planning.webp" aria-label="Project team reviewing architectural plans"><source src="/videos/planning.mp4" type="video/mp4" /></video></div></div><div class="process-track process-roadmap" data-reveal><svg class="process-path" viewBox="0 0 1000 220" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M16 62 C150 62 168 172 330 172 S510 62 660 62 S830 172 984 172" /></svg>{process.map(([title, copy]) => <div class="process-step"><span class="process-dot"></span><h3>{title}</h3><p>{copy}</p></div>)}</div></div></section>
+  <section class="section process"><div class="section-inner"><div class="process-intro"><div class="process-heading" data-reveal><h2>A clear road from ambition to arrival.</h2><p>Every stage has a purpose, a decision and an accountable owner. That is how complexity becomes confidence.</p></div><div class="process-film" data-reveal><video data-ambient-video muted loop playsinline preload="none" poster="/videos/posters/planning.webp" aria-label="Project team reviewing architectural plans"><source src="/videos/planning.mp4" type="video/mp4" /></video></div></div><div class="process-track process-roadmap" data-process-roadmap data-active-index="3" data-reveal><div class="process-line" aria-hidden="true"><span></span></div>{process.map(([title, copy], index) => <div class="process-step" tabindex="0" data-process-index={index}><span class="process-dot"></span><h3>{title}</h3><p>{copy}</p></div>)}</div></div></section>
   <section class="global-teaser" data-reveal><div class="global-image"><img src="/Images/globe.jpeg" alt="World map suggesting TH Homes' international outlook" width="1200" height="540" loading="lazy" /></div><div class="global-copy"><h2>Rooted in Abuja. Ready for international briefs.</h2><p>Our current focus begins in Nigeria. Our structure is designed to support carefully selected projects, partnerships and future regional growth across global markets.</p><a class="text-link light" href="/global-presence">Explore our global outlook <span aria-hidden="true">↗</span></a></div></section>
   <section class="cta-band cta-pattern" data-reveal><h2>Have a project in mind?</h2><a class="button" href="/consultation">Request a consultation</a></section>
+  <script is:inline>
+    const roadmap = document.querySelector('[data-process-roadmap]');
+    const steps = roadmap?.querySelectorAll('[data-process-index]') ?? [];
+    const activateStep = (step) => {
+      const index = step.dataset.processIndex;
+      if (index === undefined) return;
+      roadmap.dataset.activeIndex = index;
+      steps.forEach((item) => item.toggleAttribute('data-active', item === step));
+    };
+    steps.forEach((step) => {
+      step.addEventListener('pointerenter', () => activateStep(step));
+      step.addEventListener('focus', () => activateStep(step));
+    });
+    roadmap?.addEventListener('pointerleave', () => {
+      roadmap.dataset.activeIndex = '3';
+      steps.forEach((item) => item.removeAttribute('data-active'));
+    });
+    roadmap?.addEventListener('focusout', (event) => {
+      if (!roadmap.contains(event.relatedTarget)) {
+        roadmap.dataset.activeIndex = '3';
+        steps.forEach((item) => item.removeAttribute('data-active'));
+      }
+    });
+  </script>
 </BaseLayout>
