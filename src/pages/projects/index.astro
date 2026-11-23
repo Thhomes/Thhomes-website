@@ -1,12 +1,105 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const projects = [
-  {name:'Courtyard House',status:'Concept',image:'/Images/courtyard.jpg',scope:'Architecture · Development study'},
-  {name:'Garden Residence',status:'Concept',image:'/Images/optimized/luxury-side.webp',scope:'Architecture · Interior planning'},
-  {name:'Horizon Villas',status:'Proposed',image:'/Images/3d-home.jpeg',scope:'Architecture · Development study'},
-  {name:'Terrace Collection',status:'Proposed',image:'/Images/beautiful-home.jpeg',scope:'Design · Construction study'},
-  {name:'Urban House',status:'Concept',image:'/Images/classy-home.jpeg',scope:'Architecture · Landscape study'},
-  {name:'Civic Court',status:'Proposed',image:'/Images/custom-home.jpeg',scope:'Feasibility · Concept design'},
+
+const architecture = [
+  { name: 'Courtyard House', image: '/Images/courtyard.jpg', alt: 'Brick courtyard residence arranged around a pool', format: 'wide' },
+  { name: 'Garden Residence', image: '/Images/optimized/luxury-side.webp', alt: 'Contemporary residence viewed from a landscaped side garden', format: 'tall' },
+  { name: 'Horizon Villas', image: '/Images/3d-home.jpeg', alt: 'Architectural study of a contemporary villa', format: 'standard' },
+  { name: 'Terrace Collection', image: '/Images/beautiful-home.jpeg', alt: 'Contemporary multi-storey home with warm exterior lighting', format: 'standard' },
+  { name: 'Urban House', image: '/Images/classy-home.jpeg', alt: 'Modern urban residence with layered facade', format: 'tall' },
+  { name: 'Civic Court', image: '/Images/custom-home.jpeg', alt: 'Custom contemporary home design', format: 'standard' },
+  { name: 'Layered Residence', image: '/Images/home-front-design-2.jpeg', alt: 'Residential proposal with layered balconies and stone details', format: 'wide' },
+  { name: 'Private Residence Study', image: '/home-front-design.jpeg', alt: 'Front elevation study for a private residence', format: 'standard' },
+  { name: 'Residential Development', image: '/Images/my-project.jpg', alt: 'Residential building design presentation', format: 'tall' },
+  { name: 'Elevation Study', image: '/Images/myproject-2.jpg', alt: 'Architectural elevation study for a contemporary building', format: 'standard' },
+  { name: 'Facade Study', image: '/Images/myproject-3.jpg', alt: 'Contemporary facade design study', format: 'standard' },
+];
+
+const interiors = [
+  { image: '/Images/interior-sitting-room.jpg', alt: 'Contemporary living room with warm timber details' },
+  { image: '/Images/interior-kitchen.jpg', alt: 'Modern kitchen with dark cabinetry and stone surfaces' },
+  { image: '/Images/interior-dinning.jpg', alt: 'Dining area with sculptural lighting and warm finishes' },
+  { image: '/Images/interior-sitting-area.jpg', alt: 'Comfortable sitting area in a contemporary interior' },
+  { image: '/Images/interior-mirror-basin.jpg', alt: 'Bathroom vanity with mirror and stone basin' },
+  { image: '/Images/interior-black-dinning.jpg', alt: 'Dark-toned dining room with statement lighting' },
+  { image: '/Images/interior-walkway.jpg', alt: 'Interior walkway with layered lighting and wall details' },
+  { image: '/Images/bathroom.jpg', alt: 'Contemporary bathroom with stone-effect surfaces' },
+  { image: '/Images/interior-dark-reading.jpg', alt: 'Dark reading room with integrated shelving' },
+  { image: '/Images/interior-dinner-table.jpg', alt: 'Dining table arrangement in a refined interior' },
+  { image: '/Images/interior-mirror.jpg', alt: 'Interior mirror composition with warm lighting' },
+  { image: '/Images/interior-sitting.jpg', alt: 'Contemporary lounge with layered neutral furnishings' },
+  { image: '/Images/interior.jpg', alt: 'Detailed view of a contemporary residential interior' },
+];
+
+const proposalEvidence = [
+  { stage: 'Brief', image: '/Images/case-study/brief.webp', alt: 'Anonymized interior specification page defining a functional TV console', copy: 'Requirements are translated into specific functions, priorities and a design direction.' },
+  { stage: 'Concept', image: '/Images/case-study/concept.webp', alt: 'Anonymized architectural concept development presentation', copy: 'A central idea gives form, character and coherence to the emerging proposal.' },
+  { stage: 'Spatial planning', image: '/Images/case-study/spatial-planning.webp', alt: 'Anonymized spatial relationship diagrams from an architectural proposal', copy: 'Adjacencies and circulation are tested before the plan is resolved in detail.' },
+  { stage: 'Material direction', image: '/Images/case-study/material-direction.webp', alt: 'Anonymized material selection page showing timber wall panels', copy: 'Finishes are selected for appearance, performance and their place in the wider composition.' },
+  { stage: 'Final proposal', image: '/Images/case-study/final-proposal.webp', alt: 'Anonymized final bedroom interior proposal', copy: 'The resolved proposal brings the spatial, material and functional decisions together.' },
 ];
 ---
-<BaseLayout title="Our Projects — TH Homes" description="Explore architectural and development concepts by TH Homes."><section class="page-hero projects-hero projects-showcase-hero"><div class="project-hero-gallery" aria-hidden="true"><img src="/Images/courtyard.jpg" alt="" /><img src="/Images/optimized/luxury-side.webp" alt="" /><img src="/Images/3d-home.jpeg" alt="" /></div><div class="page-hero-inner"><h1>Projects defined by purpose, place and detail.</h1><p>A growing visual portfolio of concepts and proposed work. Verified delivery records will be added as projects progress.</p></div></section><section class="section"><div class="section-inner"><div class="project-grid">{projects.map((project,index) => <article class:list={['project-entry',index===0&&'project-entry-featured']} data-reveal><div class="project-entry-image"><img src={project.image} alt={`${project.name} architectural concept`} width="1728" height="1080" loading={index<2?'eager':'lazy'} /></div><div class="project-entry-meta"><h2>{project.name}</h2><div><span class="project-status">{project.status}</span><p>{project.scope}</p></div></div></article>)}</div></div></section><section class="cta-band cta-pattern" data-reveal><h2>Planning something of your own?</h2><a class="button" href="/consultation">Start a project</a></section></BaseLayout>
+<BaseLayout title="Selected Projects — TH Homes" description="Selected architecture, proposals and interior design work by TH Homes.">
+  <section class="page-hero projects-hero projects-showcase-hero">
+    <div class="project-hero-gallery" aria-hidden="true"><img src="/Images/home-front-design-2.jpeg" alt="" /><img src="/Images/interior-sitting-room.jpg" alt="" /><img src="/Images/courtyard.jpg" alt="" /></div>
+    <div class="page-hero-inner"><h1>Architecture and interiors, considered as one.</h1><p>Selected work and design studies spanning buildings, rooms and the details that connect them.</p></div>
+  </section>
+
+  <nav class="portfolio-nav" aria-label="Project categories"><div class="section-inner"><a href="#architecture">Architecture</a><a href="#interiors">Interiors</a><a href="#process">Design process</a></div></nav>
+
+  <section class="section portfolio-section" id="architecture"><div class="section-inner">
+    <div class="portfolio-rail-head" data-reveal><div><h2>Selected architecture.</h2><p>Homes, developments and design studies across different scales and stages.</p></div><div class="rail-controls" data-rail-controls><span class="rail-status" aria-live="polite"><b data-rail-current>1</b> / {architecture.length}</span><button type="button" data-rail-prev aria-label="Previous architecture project" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button><button type="button" data-rail-next aria-label="Next architecture project"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button></div></div>
+    <div class="architecture-gallery project-rail" data-project-rail tabindex="0" aria-label="Selected architecture projects. Scroll horizontally to explore.">
+      {architecture.map((project, index) => <figure class:list={['architecture-work', `architecture-work-${project.format}`]} data-reveal><div><img src={project.image} alt={project.alt} loading={index < 2 ? 'eager' : 'lazy'} /></div><figcaption><h3>{project.name}</h3><p>Architecture and design</p></figcaption></figure>)}
+    </div>
+  </div></section>
+
+  <section class="interior-portfolio" id="interiors"><div class="section-inner">
+    <div class="portfolio-rail-head interior-heading" data-reveal><div><h2>Selected interiors.</h2><p>Living, dining, kitchen and private spaces developed through light, texture, furniture and everyday function.</p></div><div class="rail-controls rail-controls-light" data-rail-controls><span class="rail-status" aria-live="polite"><b data-rail-current>1</b> / {interiors.length}</span><button type="button" data-rail-prev aria-label="Previous interior project" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button><button type="button" data-rail-next aria-label="Next interior project"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button></div></div>
+    <div class="interior-gallery project-rail" data-project-rail tabindex="0" aria-label="Selected interior projects. Scroll horizontally to explore.">
+      {interiors.map((interior, index) => <figure class:list={['interior-work', index % 5 === 0 && 'interior-work-featured']} data-reveal><img src={interior.image} alt={interior.alt} loading="lazy" /></figure>)}
+    </div>
+  </div></section>
+
+  <section class="section proposal-process" id="process"><div class="section-inner">
+    <div class="section-head" data-reveal><h2>Every proposal has work behind it.</h2><p>Selected anonymized excerpts from separate proposals show how TH Homes develops a brief into coordinated design evidence.</p></div>
+    <div class="proposal-evidence">{proposalEvidence.map((item, index) => <figure class="proposal-evidence-item" data-reveal><div class="proposal-evidence-image"><img src={item.image} alt={item.alt} loading="lazy" /></div><figcaption><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{item.stage}</h3><p>{item.copy}</p></div></figcaption></figure>)}</div>
+    <p class="proposal-privacy" data-reveal>Customer names, addresses and identifying project details have been removed. Original proposal documents are not published.</p>
+  </div></section>
+
+  <section class="cta-band cta-pattern" data-reveal><h2>Planning something of your own?</h2><a class="button" href="/consultation">Start a project</a></section>
+
+  <script>
+    document.querySelectorAll<HTMLElement>('[data-project-rail]').forEach((rail) => {
+      const controls = rail.previousElementSibling?.querySelector<HTMLElement>('[data-rail-controls]');
+      const previous = controls?.querySelector<HTMLButtonElement>('[data-rail-prev]');
+      const next = controls?.querySelector<HTMLButtonElement>('[data-rail-next]');
+      const current = controls?.querySelector<HTMLElement>('[data-rail-current]');
+      const items = Array.from(rail.children) as HTMLElement[];
+      if (!previous || !next || !current || items.length === 0) return;
+
+      const activeIndex = () => items.reduce((nearest, item, index) => {
+        const distance = Math.abs(item.offsetLeft - rail.scrollLeft);
+        return distance < nearest.distance ? { index, distance } : nearest;
+      }, { index: 0, distance: Number.POSITIVE_INFINITY }).index;
+
+      const update = () => {
+        const index = activeIndex();
+        current.textContent = String(index + 1);
+        previous.disabled = rail.scrollLeft <= 4;
+        next.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4;
+      };
+
+      const move = (direction: -1 | 1) => {
+        const index = Math.min(items.length - 1, Math.max(0, activeIndex() + direction));
+        items[index]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      };
+
+      previous.addEventListener('click', () => move(-1));
+      next.addEventListener('click', () => move(1));
+      rail.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      update();
+    });
+  </script>
+</BaseLayout>

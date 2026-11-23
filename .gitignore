@@ -38,6 +38,9 @@ public/Images/home_files/
 public/Images/sustainability.html
 public/Images/sustainability_files/
 
+# Private client source material (never shipped with the public site)
+/private-source/
+
 # Duplicate high-resolution source media (optimized copies are committed)
 /public/Images/building-model.jpg
 /public/Images/construction.mp4
