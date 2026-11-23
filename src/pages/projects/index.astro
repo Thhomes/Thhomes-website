@@ -1,12 +1,62 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const projects = [
-  {name:'Courtyard House',status:'Concept',image:'/Images/courtyard.jpg',scope:'Architecture · Development study'},
-  {name:'Garden Residence',status:'Concept',image:'/Images/optimized/luxury-side.webp',scope:'Architecture · Interior planning'},
-  {name:'Horizon Villas',status:'Proposed',image:'/Images/3d-home.jpeg',scope:'Architecture · Development study'},
-  {name:'Terrace Collection',status:'Proposed',image:'/Images/beautiful-home.jpeg',scope:'Design · Construction study'},
-  {name:'Urban House',status:'Concept',image:'/Images/classy-home.jpeg',scope:'Architecture · Landscape study'},
-  {name:'Civic Court',status:'Proposed',image:'/Images/custom-home.jpeg',scope:'Feasibility · Concept design'},
+
+const architecture = [
+  { name: 'Courtyard House', image: '/Images/courtyard.jpg', alt: 'Brick courtyard residence arranged around a pool', format: 'wide' },
+  { name: 'Garden Residence', image: '/Images/optimized/luxury-side.webp', alt: 'Contemporary residence viewed from a landscaped side garden', format: 'tall' },
+  { name: 'Horizon Villas', image: '/Images/3d-home.jpeg', alt: 'Architectural study of a contemporary villa', format: 'standard' },
+  { name: 'Terrace Collection', image: '/Images/beautiful-home.jpeg', alt: 'Contemporary multi-storey home with warm exterior lighting', format: 'standard' },
+  { name: 'Urban House', image: '/Images/classy-home.jpeg', alt: 'Modern urban residence with layered facade', format: 'tall' },
+  { name: 'Civic Court', image: '/Images/custom-home.jpeg', alt: 'Custom contemporary home design', format: 'standard' },
+  { name: 'Layered Residence', image: '/Images/home-front-design-2.jpeg', alt: 'Residential proposal with layered balconies and stone details', format: 'wide' },
+  { name: 'Private Residence Study', image: '/home-front-design.jpeg', alt: 'Front elevation study for a private residence', format: 'standard' },
+  { name: 'Residential Development', image: '/Images/my-project.jpg', alt: 'Residential building design presentation', format: 'tall' },
+  { name: 'Elevation Study', image: '/Images/myproject-2.jpg', alt: 'Architectural elevation study for a contemporary building', format: 'standard' },
+  { name: 'Facade Study', image: '/Images/myproject-3.jpg', alt: 'Contemporary facade design study', format: 'standard' },
+];
+
+const interiors = [
+  { image: '/Images/interior-sitting-room.jpg', alt: 'Contemporary living room with warm timber details' },
+  { image: '/Images/interior-kitchen.jpg', alt: 'Modern kitchen with dark cabinetry and stone surfaces' },
+  { image: '/Images/interior-dinning.jpg', alt: 'Dining area with sculptural lighting and warm finishes' },
+  { image: '/Images/interior-sitting-area.jpg', alt: 'Comfortable sitting area in a contemporary interior' },
+  { image: '/Images/interior-mirror-basin.jpg', alt: 'Bathroom vanity with mirror and stone basin' },
+  { image: '/Images/interior-black-dinning.jpg', alt: 'Dark-toned dining room with statement lighting' },
+  { image: '/Images/interior-walkway.jpg', alt: 'Interior walkway with layered lighting and wall details' },
+  { image: '/Images/bathroom.jpg', alt: 'Contemporary bathroom with stone-effect surfaces' },
+  { image: '/Images/interior-dark-reading.jpg', alt: 'Dark reading room with integrated shelving' },
+  { image: '/Images/interior-dinner-table.jpg', alt: 'Dining table arrangement in a refined interior' },
+  { image: '/Images/interior-mirror.jpg', alt: 'Interior mirror composition with warm lighting' },
+  { image: '/Images/interior-sitting.jpg', alt: 'Contemporary lounge with layered neutral furnishings' },
+  { image: '/Images/interior.jpg', alt: 'Detailed view of a contemporary residential interior' },
 ];
 ---
-<BaseLayout title="Our Projects — TH Homes" description="Explore architectural and development concepts by TH Homes."><section class="page-hero projects-hero projects-showcase-hero"><div class="project-hero-gallery" aria-hidden="true"><img src="/Images/courtyard.jpg" alt="" /><img src="/Images/optimized/luxury-side.webp" alt="" /><img src="/Images/3d-home.jpeg" alt="" /></div><div class="page-hero-inner"><h1>Projects defined by purpose, place and detail.</h1><p>A growing visual portfolio of concepts and proposed work. Verified delivery records will be added as projects progress.</p></div></section><section class="section"><div class="section-inner"><div class="project-grid">{projects.map((project,index) => <article class:list={['project-entry',index===0&&'project-entry-featured']} data-reveal><div class="project-entry-image"><img src={project.image} alt={`${project.name} architectural concept`} width="1728" height="1080" loading={index<2?'eager':'lazy'} /></div><div class="project-entry-meta"><h2>{project.name}</h2><div><span class="project-status">{project.status}</span><p>{project.scope}</p></div></div></article>)}</div></div></section><section class="cta-band cta-pattern" data-reveal><h2>Planning something of your own?</h2><a class="button" href="/consultation">Start a project</a></section></BaseLayout>
+<BaseLayout title="Projects in Abuja — TH Homes" description="Selected architecture, proposals and interior design work by TH Homes in Abuja.">
+  <section class="page-hero projects-hero projects-showcase-hero">
+    <div class="project-hero-gallery" aria-hidden="true"><img src="/Images/home-front-design-2.jpeg" alt="" /><img src="/Images/interior-sitting-room.jpg" alt="" /><img src="/Images/courtyard.jpg" alt="" /></div>
+    <div class="page-hero-inner"><h1>Architecture and interiors, considered as one.</h1><p>Selected work and design studies from Abuja—spanning buildings, rooms and the details that connect them.</p></div>
+  </section>
+
+  <nav class="portfolio-nav" aria-label="Project categories"><div class="section-inner"><a href="#architecture">Architecture</a><a href="#interiors">Interiors</a><a href="#process">Design process</a></div></nav>
+
+  <section class="section portfolio-section" id="architecture"><div class="section-inner">
+    <div class="section-head" data-reveal><h2>Buildings shaped from the whole brief.</h2><p>Residential concepts and proposals developed through proportion, climate, material and the realities of delivery.</p></div>
+    <div class="architecture-gallery">
+      {architecture.map((project, index) => <figure class:list={['architecture-work', `architecture-work-${project.format}`]} data-reveal><div><img src={project.image} alt={project.alt} loading={index < 2 ? 'eager' : 'lazy'} /></div><figcaption><h3>{project.name}</h3><p>Abuja · Architecture and design</p></figcaption></figure>)}
+    </div>
+  </div></section>
+
+  <section class="interior-portfolio" id="interiors"><div class="section-inner">
+    <div class="interior-heading" data-reveal><h2>Interiors with a sense of arrival.</h2><p>Living, dining, kitchen and private spaces composed through light, texture, furniture and everyday function.</p></div>
+    <div class="interior-gallery">
+      {interiors.map((interior, index) => <figure class:list={['interior-work', index % 5 === 0 && 'interior-work-featured']} data-reveal><img src={interior.image} alt={interior.alt} loading="lazy" /></figure>)}
+    </div>
+  </div></section>
+
+  <section class="section proposal-process" id="process"><div class="section-inner">
+    <div class="section-head" data-reveal><h2>Every proposal has work behind it.</h2><p>Client material remains private. What we share publicly is the thinking: a clear progression from brief to coordinated design.</p></div>
+    <div class="proposal-sequence" data-reveal><article><h3>Understand</h3><p>Site, priorities, budget, programme and the way the space needs to work.</p></article><article><h3>Resolve</h3><p>Plans, form, materials and interiors developed as one coordinated direction.</p></article><article><h3>Communicate</h3><p>Drawings and visual proposals that make decisions clear before work advances.</p></article><article><h3>Deliver</h3><p>Design intent carried into construction, detailing and final completion.</p></article></div>
+  </div></section>
+
+  <section class="cta-band cta-pattern" data-reveal><h2>Planning something of your own?</h2><a class="button" href="/consultation">Start a project</a></section>
+</BaseLayout>

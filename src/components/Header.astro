@@ -4,7 +4,7 @@ const links = [
   { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
   { href: '/projects', label: 'Projects' },
-  { href: '/global-presence', label: 'Global presence' },
+  { href: '/abuja', label: 'Abuja' },
   { href: '/contact', label: 'Contact' },
 ];
 ---
@@ -27,7 +27,7 @@ const links = [
     <span></span><span></span>
   </button>
   <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" data-menu>
-    <div class="mobile-menu-heading"><span>TH Homes</span><span>Abuja · Global outlook</span></div>
+    <div class="mobile-menu-heading"><span>TH Homes</span><span>Designed and delivered in Abuja</span></div>
     <div class="mobile-menu-links">
       {links.map((link, index) => <a href={link.href} aria-current={pathname === link.href ? 'page' : undefined}><span>{String(index + 1).padStart(2, '0')}</span>{link.label}</a>)}
     </div>
