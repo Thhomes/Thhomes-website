@@ -1,0 +1,25 @@
+<aside class="cookie-consent" data-cookie-consent hidden aria-label="Cookie preferences">
+  <div>
+    <h2>Your privacy, clearly handled.</h2>
+    <p>We use essential cookies to make this website work. Optional analytics will remain off unless you accept them.</p>
+  </div>
+  <div class="cookie-actions">
+    <button type="button" class="button button-secondary" data-cookie-reject>Essential only</button>
+    <button type="button" class="button" data-cookie-accept>Accept analytics</button>
+  </div>
+</aside>
+
+<script>
+  const consent = document.querySelector<HTMLElement>('[data-cookie-consent]');
+  const storageKey = 'thhomes-cookie-preference';
+  if (consent && !localStorage.getItem(storageKey)) {
+    requestAnimationFrame(() => { consent.hidden = false; });
+  }
+  const savePreference = (value: 'essential' | 'analytics') => {
+    localStorage.setItem(storageKey, value);
+    consent?.setAttribute('data-closing', '');
+    window.setTimeout(() => { if (consent) consent.hidden = true; }, 220);
+  };
+  document.querySelector('[data-cookie-reject]')?.addEventListener('click', () => savePreference('essential'));
+  document.querySelector('[data-cookie-accept]')?.addEventListener('click', () => savePreference('analytics'));
+</script>

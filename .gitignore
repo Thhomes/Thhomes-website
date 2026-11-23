@@ -37,3 +37,15 @@ public/Images/home.html
 public/Images/home_files/
 public/Images/sustainability.html
 public/Images/sustainability_files/
+
+# Duplicate high-resolution source media (optimized copies are committed)
+/public/Images/building-model.jpg
+/public/Images/construction.mp4
+/public/Images/luxury-front.jpg
+/public/Images/luxury-home.mp4
+/public/Images/luxury-side1.jpg
+/public/Images/subject-modeling-home.jpg
+/public/videos/building-model.jpg
+/public/videos/luxury-front.jpg
+/public/videos/luxury-side1.jpg
+/public/videos/subject-modeling-home.jpg

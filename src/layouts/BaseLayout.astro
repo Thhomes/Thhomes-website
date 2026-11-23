@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -29,6 +30,7 @@ const { title, description, pageClass = '' } = Astro.props;
     <Header />
     <main id="main-content"><slot /></main>
     <Footer />
+    <CookieConsent />
     <script is:inline>
       const root = document.documentElement;
       const updateProgress = () => {
@@ -64,6 +66,10 @@ const { title, description, pageClass = '' } = Astro.props;
       }
 
       const ambientVideos = document.querySelectorAll('[data-ambient-video]');
+      ambientVideos.forEach((video) => {
+        const rate = Number(video.dataset.playbackRate || '1');
+        video.playbackRate = Number.isFinite(rate) ? rate : 1;
+      });
       if (reduceMotion) {
         ambientVideos.forEach((video) => video.pause());
       } else {
