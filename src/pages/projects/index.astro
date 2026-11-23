@@ -30,11 +30,19 @@ const interiors = [
   { image: '/Images/interior-sitting.jpg', alt: 'Contemporary lounge with layered neutral furnishings' },
   { image: '/Images/interior.jpg', alt: 'Detailed view of a contemporary residential interior' },
 ];
+
+const proposalEvidence = [
+  { stage: 'Brief', image: '/Images/case-study/brief.webp', alt: 'Anonymized interior specification page defining a functional TV console', copy: 'Requirements are translated into specific functions, priorities and a design direction.' },
+  { stage: 'Concept', image: '/Images/case-study/concept.webp', alt: 'Anonymized architectural concept development presentation', copy: 'A central idea gives form, character and coherence to the emerging proposal.' },
+  { stage: 'Spatial planning', image: '/Images/case-study/spatial-planning.webp', alt: 'Anonymized spatial relationship diagrams from an architectural proposal', copy: 'Adjacencies and circulation are tested before the plan is resolved in detail.' },
+  { stage: 'Material direction', image: '/Images/case-study/material-direction.webp', alt: 'Anonymized material selection page showing timber wall panels', copy: 'Finishes are selected for appearance, performance and their place in the wider composition.' },
+  { stage: 'Final proposal', image: '/Images/case-study/final-proposal.webp', alt: 'Anonymized final bedroom interior proposal', copy: 'The resolved proposal brings the spatial, material and functional decisions together.' },
+];
 ---
-<BaseLayout title="Projects in Abuja — TH Homes" description="Selected architecture, proposals and interior design work by TH Homes in Abuja.">
+<BaseLayout title="Selected Projects — TH Homes" description="Selected architecture, proposals and interior design work by TH Homes.">
   <section class="page-hero projects-hero projects-showcase-hero">
     <div class="project-hero-gallery" aria-hidden="true"><img src="/Images/home-front-design-2.jpeg" alt="" /><img src="/Images/interior-sitting-room.jpg" alt="" /><img src="/Images/courtyard.jpg" alt="" /></div>
-    <div class="page-hero-inner"><h1>Architecture and interiors, considered as one.</h1><p>Selected work and design studies from Abuja—spanning buildings, rooms and the details that connect them.</p></div>
+    <div class="page-hero-inner"><h1>Architecture and interiors, considered as one.</h1><p>Selected work and design studies spanning buildings, rooms and the details that connect them.</p></div>
   </section>
 
   <nav class="portfolio-nav" aria-label="Project categories"><div class="section-inner"><a href="#architecture">Architecture</a><a href="#interiors">Interiors</a><a href="#process">Design process</a></div></nav>
@@ -42,7 +50,7 @@ const interiors = [
   <section class="section portfolio-section" id="architecture"><div class="section-inner">
     <div class="section-head" data-reveal><h2>Buildings shaped from the whole brief.</h2><p>Residential concepts and proposals developed through proportion, climate, material and the realities of delivery.</p></div>
     <div class="architecture-gallery">
-      {architecture.map((project, index) => <figure class:list={['architecture-work', `architecture-work-${project.format}`]} data-reveal><div><img src={project.image} alt={project.alt} loading={index < 2 ? 'eager' : 'lazy'} /></div><figcaption><h3>{project.name}</h3><p>Abuja · Architecture and design</p></figcaption></figure>)}
+      {architecture.map((project, index) => <figure class:list={['architecture-work', `architecture-work-${project.format}`]} data-reveal><div><img src={project.image} alt={project.alt} loading={index < 2 ? 'eager' : 'lazy'} /></div><figcaption><h3>{project.name}</h3><p>Architecture and design</p></figcaption></figure>)}
     </div>
   </div></section>
 
@@ -54,8 +62,9 @@ const interiors = [
   </div></section>
 
   <section class="section proposal-process" id="process"><div class="section-inner">
-    <div class="section-head" data-reveal><h2>Every proposal has work behind it.</h2><p>Client material remains private. What we share publicly is the thinking: a clear progression from brief to coordinated design.</p></div>
-    <div class="proposal-sequence" data-reveal><article><h3>Understand</h3><p>Site, priorities, budget, programme and the way the space needs to work.</p></article><article><h3>Resolve</h3><p>Plans, form, materials and interiors developed as one coordinated direction.</p></article><article><h3>Communicate</h3><p>Drawings and visual proposals that make decisions clear before work advances.</p></article><article><h3>Deliver</h3><p>Design intent carried into construction, detailing and final completion.</p></article></div>
+    <div class="section-head" data-reveal><h2>Every proposal has work behind it.</h2><p>Selected anonymized excerpts from separate proposals show how TH Homes develops a brief into coordinated design evidence.</p></div>
+    <div class="proposal-evidence">{proposalEvidence.map((item, index) => <figure class="proposal-evidence-item" data-reveal><div class="proposal-evidence-image"><img src={item.image} alt={item.alt} loading="lazy" /></div><figcaption><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{item.stage}</h3><p>{item.copy}</p></div></figcaption></figure>)}</div>
+    <p class="proposal-privacy" data-reveal>Customer names, addresses and identifying project details have been removed. Original proposal documents are not published.</p>
   </div></section>
 
   <section class="cta-band cta-pattern" data-reveal><h2>Planning something of your own?</h2><a class="button" href="/consultation">Start a project</a></section>
