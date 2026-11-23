@@ -48,15 +48,15 @@ const proposalEvidence = [
   <nav class="portfolio-nav" aria-label="Project categories"><div class="section-inner"><a href="#architecture">Architecture</a><a href="#interiors">Interiors</a><a href="#process">Design process</a></div></nav>
 
   <section class="section portfolio-section" id="architecture"><div class="section-inner">
-    <div class="section-head" data-reveal><h2>Buildings shaped from the whole brief.</h2><p>Residential concepts and proposals developed through proportion, climate, material and the realities of delivery.</p></div>
-    <div class="architecture-gallery">
+    <div class="portfolio-rail-head" data-reveal><div><h2>Selected architecture.</h2><p>Homes, developments and design studies across different scales and stages.</p></div><div class="rail-controls" data-rail-controls><span class="rail-status" aria-live="polite"><b data-rail-current>1</b> / {architecture.length}</span><button type="button" data-rail-prev aria-label="Previous architecture project" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button><button type="button" data-rail-next aria-label="Next architecture project"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button></div></div>
+    <div class="architecture-gallery project-rail" data-project-rail tabindex="0" aria-label="Selected architecture projects. Scroll horizontally to explore.">
       {architecture.map((project, index) => <figure class:list={['architecture-work', `architecture-work-${project.format}`]} data-reveal><div><img src={project.image} alt={project.alt} loading={index < 2 ? 'eager' : 'lazy'} /></div><figcaption><h3>{project.name}</h3><p>Architecture and design</p></figcaption></figure>)}
     </div>
   </div></section>
 
   <section class="interior-portfolio" id="interiors"><div class="section-inner">
-    <div class="interior-heading" data-reveal><h2>Interiors with a sense of arrival.</h2><p>Living, dining, kitchen and private spaces composed through light, texture, furniture and everyday function.</p></div>
-    <div class="interior-gallery">
+    <div class="portfolio-rail-head interior-heading" data-reveal><div><h2>Selected interiors.</h2><p>Living, dining, kitchen and private spaces developed through light, texture, furniture and everyday function.</p></div><div class="rail-controls rail-controls-light" data-rail-controls><span class="rail-status" aria-live="polite"><b data-rail-current>1</b> / {interiors.length}</span><button type="button" data-rail-prev aria-label="Previous interior project" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button><button type="button" data-rail-next aria-label="Next interior project"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button></div></div>
+    <div class="interior-gallery project-rail" data-project-rail tabindex="0" aria-label="Selected interior projects. Scroll horizontally to explore.">
       {interiors.map((interior, index) => <figure class:list={['interior-work', index % 5 === 0 && 'interior-work-featured']} data-reveal><img src={interior.image} alt={interior.alt} loading="lazy" /></figure>)}
     </div>
   </div></section>
@@ -68,4 +68,38 @@ const proposalEvidence = [
   </div></section>
 
   <section class="cta-band cta-pattern" data-reveal><h2>Planning something of your own?</h2><a class="button" href="/consultation">Start a project</a></section>
+
+  <script>
+    document.querySelectorAll<HTMLElement>('[data-project-rail]').forEach((rail) => {
+      const controls = rail.previousElementSibling?.querySelector<HTMLElement>('[data-rail-controls]');
+      const previous = controls?.querySelector<HTMLButtonElement>('[data-rail-prev]');
+      const next = controls?.querySelector<HTMLButtonElement>('[data-rail-next]');
+      const current = controls?.querySelector<HTMLElement>('[data-rail-current]');
+      const items = Array.from(rail.children) as HTMLElement[];
+      if (!previous || !next || !current || items.length === 0) return;
+
+      const activeIndex = () => items.reduce((nearest, item, index) => {
+        const distance = Math.abs(item.offsetLeft - rail.scrollLeft);
+        return distance < nearest.distance ? { index, distance } : nearest;
+      }, { index: 0, distance: Number.POSITIVE_INFINITY }).index;
+
+      const update = () => {
+        const index = activeIndex();
+        current.textContent = String(index + 1);
+        previous.disabled = rail.scrollLeft <= 4;
+        next.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4;
+      };
+
+      const move = (direction: -1 | 1) => {
+        const index = Math.min(items.length - 1, Math.max(0, activeIndex() + direction));
+        items[index]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      };
+
+      previous.addEventListener('click', () => move(-1));
+      next.addEventListener('click', () => move(1));
+      rail.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      update();
+    });
+  </script>
 </BaseLayout>
