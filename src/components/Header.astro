@@ -18,6 +18,10 @@ const links = [
       <a href={link.href} aria-current={pathname === link.href ? 'page' : undefined}>{link.label}</a>
     ))}
   </nav>
+  <button class="theme-toggle desktop-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" data-theme-toggle>
+    <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path></svg>
+    <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 15.5A8.2 8.2 0 0 1 8.5 3.9 8.2 8.2 0 1 0 20.1 15.5Z"></path></svg>
+  </button>
   <a class="button button-small desktop-cta" href="/consultation">Request a consultation</a>
   <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" data-menu-button>
     <span></span><span></span>
@@ -27,6 +31,6 @@ const links = [
     <div class="mobile-menu-links">
       {links.map((link, index) => <a href={link.href} aria-current={pathname === link.href ? 'page' : undefined}><span>{String(index + 1).padStart(2, '0')}</span>{link.label}</a>)}
     </div>
-    <div class="mobile-menu-footer"><p>Architecture. Construction.<br />Property Development.</p><a class="button" href="/consultation">Request a consultation</a></div>
+    <div class="mobile-menu-footer"><p>Architecture. Construction.<br />Property Development.</p><button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" data-theme-toggle><svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path></svg><svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 15.5A8.2 8.2 0 0 1 8.5 3.9 8.2 8.2 0 1 0 20.1 15.5Z"></path></svg><span data-theme-label>Dark mode</span></button><a class="button" href="/consultation">Request a consultation</a></div>
   </nav>
 </header>
