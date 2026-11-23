@@ -27,15 +27,15 @@ const regions = [
         <p>This roadmap distinguishes our initial market from future coverage. It is an outlook, not a claim of established offices.</p>
       </div>
       <div class="journey-layout" data-reveal>
-        <div class="journey-map" aria-hidden="true">
+        <div class="journey-map" data-journey-map>
           <img src="/Images/globe.jpeg" alt="" width="1200" height="540" />
-          <svg viewBox="0 0 1000 540" preserveAspectRatio="none">
+          <svg viewBox="0 0 1000 540" preserveAspectRatio="none" aria-hidden="true">
             <path class="journey-route" d="M500 285 C430 230 350 205 255 180 S112 150 80 170 M500 285 C520 210 555 165 600 145 M500 285 C590 260 690 245 790 245 S900 220 940 175 M500 285 C430 350 350 400 270 430 M500 285 C610 345 720 400 845 430" />
             <circle class="journey-origin" cx="500" cy="285" r="8" />
           </svg>
-          <span class="journey-marker" data-journey-marker style={`--marker-x:${regions[0].marker.x}%;--marker-y:${regions[0].marker.y}%`}>
+          <button class="journey-marker" type="button" data-journey-marker aria-label="Map pin on Africa. Drag to choose a region." style={`--marker-x:${regions[0].marker.x}%;--marker-y:${regions[0].marker.y}%`}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-          </span>
+          </button>
           <span class="journey-map-label" data-journey-map-label>Abuja · Initial market</span>
         </div>
         <div class="journey-panel">
@@ -69,21 +69,58 @@ const regions = [
     const copy = root?.querySelector('[data-region-copy]');
     const detail = root?.querySelector('.journey-detail');
     const marker = root?.querySelector('[data-journey-marker]');
+    const map = root?.querySelector('[data-journey-map]');
     const mapLabel = root?.querySelector('[data-journey-map-label]');
 
-    buttons.forEach((button) => button.addEventListener('click', () => {
-      const region = regions[Number(button.dataset.regionIndex)];
+    const activateRegion = (index, animate = true) => {
+      const region = regions[index];
       if (!region || !name || !status || !copy || !detail) return;
-      buttons.forEach((item) => item.setAttribute('aria-selected', String(item === button)));
+      buttons.forEach((item) => item.setAttribute('aria-selected', String(Number(item.dataset.regionIndex) === index)));
       name.textContent = region.name;
       status.textContent = region.status;
       copy.textContent = region.copy;
       marker?.style.setProperty('--marker-x', `${region.marker.x}%`);
       marker?.style.setProperty('--marker-y', `${region.marker.y}%`);
+      marker?.setAttribute('aria-label', `Map pin on ${region.name}. Drag to choose a region.`);
       if (mapLabel) mapLabel.textContent = region.id === 'africa' ? 'Abuja · Initial market' : `${region.name} · Future coverage`;
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         detail.animate([{ opacity:.35, transform:'translateY(8px)' }, { opacity:1, transform:'none' }], { duration:300, easing:'cubic-bezier(.23,1,.32,1)' });
       }
-    }));
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => activateRegion(Number(button.dataset.regionIndex))));
+
+    let dragging = false;
+    const moveMarker = (event) => {
+      if (!dragging || !map || !marker) return;
+      const bounds = map.getBoundingClientRect();
+      const x = Math.min(94, Math.max(6, ((event.clientX - bounds.left) / bounds.width) * 100));
+      const y = Math.min(88, Math.max(12, ((event.clientY - bounds.top) / bounds.height) * 100));
+      marker.style.setProperty('--marker-x', `${x}%`);
+      marker.style.setProperty('--marker-y', `${y}%`);
+    };
+    const finishDrag = (event) => {
+      if (!dragging || !map || !marker) return;
+      dragging = false;
+      marker.removeAttribute('data-dragging');
+      marker.releasePointerCapture?.(event.pointerId);
+      const bounds = map.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+      const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+      const nearestIndex = regions.reduce((nearest, region, index) => {
+        const distance = Math.hypot(region.marker.x - x, region.marker.y - y);
+        return distance < nearest.distance ? { index, distance } : nearest;
+      }, { index: 0, distance: Infinity }).index;
+      activateRegion(nearestIndex);
+    };
+    marker?.addEventListener('pointerdown', (event) => {
+      dragging = true;
+      marker.setAttribute('data-dragging', '');
+      marker.setPointerCapture?.(event.pointerId);
+      moveMarker(event);
+    });
+    marker?.addEventListener('pointermove', moveMarker);
+    marker?.addEventListener('pointerup', finishDrag);
+    marker?.addEventListener('pointercancel', finishDrag);
   </script>
 </BaseLayout>

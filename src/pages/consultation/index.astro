@@ -34,7 +34,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
           <fieldset class="field-wide form-fieldset"><legend class="fieldset-label">What do you need help with?</legend><div class="radio-group">{services.map((service, index) => <div class="radio-option"><input id={`service-${index}`} type="radio" name="service" value={service} required /><label for={`service-${index}`}>{service}</label></div>)}</div><span class="field-error" data-service-error></span></fieldset>
           <div class="field"><label for="full-name">Full name</label><input id="full-name" name="fullName" autocomplete="name" required /><span class="field-error"></span></div>
           <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="email-error" required /><span class="field-error" id="email-error"></span></div>
-          <div class="field field-wide"><label for="phone">Phone <span class="form-note">optional</span></label><div class="phone-input"><div class="dial-code-control"><span class="dial-code-flag fi fi-ng" data-dial-code-flag aria-hidden="true"></span><select id="phone-code" name="phoneCountry" aria-label="International dialling code" autocomplete="tel-country-code"><option value="">Code</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode} selected={country.code === defaultPhoneCountry}>{country.code} {country.dialCode}</option>)}</select></div><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-error" /></div><span class="field-error" id="phone-error"></span></div>
+          <div class="field field-wide"><label for="phone">Phone <span class="form-note">optional</span></label><div class="phone-input"><div class="dial-code-control"><span class="dial-code-display" aria-hidden="true"><span class="dial-code-flag fi fi-ng" data-dial-code-flag></span><span data-dial-country>NG</span><span data-dial-value>+234</span></span><select id="phone-code" name="phoneCountry" aria-label="International dialling code" autocomplete="tel-country-code"><option value="">Code</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode} selected={country.code === defaultPhoneCountry}>{country.code} {country.dialCode}</option>)}</select></div><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-error" /></div><span class="field-error" id="phone-error"></span></div>
           <div class="field"><label for="country">Country</label><select id="country" name="country" autocomplete="country" required><option value="">Select country</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode} selected={country.code === defaultPhoneCountry}>{country.name}</option>)}</select><span class="field-error"></span></div>
           <div class="field"><label for="state">State</label><select id="state" name="state" autocomplete="address-level1" required><option value="">Select state</option>{statesByCountry.NG.map((state) => <option value={state.code}>{state.name}</option>)}<option value="other">Other or not listed</option></select><span class="field-error"></span></div>
           <div class="field"><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" required /><span class="field-error"></span></div>
@@ -58,6 +58,8 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
     const state = form?.querySelector<HTMLSelectElement>('#state');
     const dialCode = form?.querySelector<HTMLSelectElement>('#phone-code');
     const dialCodeFlag = form?.querySelector<HTMLElement>('[data-dial-code-flag]');
+    const dialCountry = form?.querySelector<HTMLElement>('[data-dial-country]');
+    const dialValue = form?.querySelector<HTMLElement>('[data-dial-value]');
     const phone = form?.querySelector<HTMLInputElement>('#phone');
     const email = form?.querySelector<HTMLInputElement>('#email');
     const locationData = JSON.parse(document.querySelector('#location-data')?.textContent || '{}') as Record<string, Array<{ code: string; name: string }>>;
@@ -86,6 +88,8 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
     const updateDialCodeFlag = () => {
       const countryCode = dialCode?.value.toLowerCase();
       if (dialCodeFlag) dialCodeFlag.className = countryCode ? `dial-code-flag fi fi-${countryCode}` : 'dial-code-flag';
+      if (dialCountry) dialCountry.textContent = dialCode?.value || 'Code';
+      if (dialValue) dialValue.textContent = dialCode?.selectedOptions[0]?.dataset.dialCode || '';
     };
     const resetLocationDefaults = () => {
       if (country) country.value = 'NG';
