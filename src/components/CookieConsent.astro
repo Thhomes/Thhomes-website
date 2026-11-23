@@ -1,7 +1,7 @@
 <aside class="cookie-consent" data-cookie-consent hidden aria-label="Cookie preferences">
   <div>
     <h2>Your privacy, clearly handled.</h2>
-    <p>We use essential cookies to make this website work. Optional analytics will remain off unless you accept them.</p>
+    <p>We use essential storage to make this website work. Optional analytics remain off unless you accept them. <a href="/cookies">Read our cookie policy</a>.</p>
   </div>
   <div class="cookie-actions">
     <button type="button" class="button button-secondary" data-cookie-reject>Essential only</button>
@@ -22,4 +22,9 @@
   };
   document.querySelector('[data-cookie-reject]')?.addEventListener('click', () => savePreference('essential'));
   document.querySelector('[data-cookie-accept]')?.addEventListener('click', () => savePreference('analytics'));
+  document.querySelectorAll('[data-cookie-settings]').forEach((button) => button.addEventListener('click', () => {
+    if (!consent) return;
+    consent.removeAttribute('data-closing');
+    consent.hidden = false;
+  }));
 </script>

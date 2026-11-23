@@ -5,7 +5,7 @@ import { getCountryCallingCode, type CountryCode } from 'libphonenumber-js';
 import 'flag-icons/css/flag-icons.min.css';
 
 const services = ['Architecture & design','Construction','Property development','Project management','Investment & partnerships'];
-const defaultPhoneCountry = 'GB';
+const defaultPhoneCountry = 'NG';
 const dialCodeFor = (isoCode: string, fallback: string) => {
   try { return `+${getCountryCallingCode(isoCode as CountryCode)}`; }
   catch { return fallback.startsWith('+') ? fallback : `+${fallback.split(/\s|and/)[0]}`; }
@@ -34,9 +34,9 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
           <fieldset class="field-wide form-fieldset"><legend class="fieldset-label">What do you need help with?</legend><div class="radio-group">{services.map((service, index) => <div class="radio-option"><input id={`service-${index}`} type="radio" name="service" value={service} required /><label for={`service-${index}`}>{service}</label></div>)}</div><span class="field-error" data-service-error></span></fieldset>
           <div class="field"><label for="full-name">Full name</label><input id="full-name" name="fullName" autocomplete="name" required /><span class="field-error"></span></div>
           <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="email-error" required /><span class="field-error" id="email-error"></span></div>
-          <div class="field field-wide"><label for="phone">Phone <span class="form-note">optional</span></label><div class="phone-input"><div class="dial-code-control"><span class="dial-code-flag fi fi-gb" data-dial-code-flag aria-hidden="true"></span><select id="phone-code" name="phoneCountry" aria-label="International dialling code" autocomplete="tel-country-code"><option value="">Code</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode} selected={country.code === defaultPhoneCountry}>{country.code} {country.dialCode}</option>)}</select></div><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-error" /></div><span class="field-error" id="phone-error"></span></div>
-          <div class="field"><label for="country">Country</label><select id="country" name="country" autocomplete="country" required><option value="">Select country</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode}>{country.name}</option>)}</select><span class="field-error"></span></div>
-          <div class="field"><label for="state">State or region</label><select id="state" name="state" autocomplete="address-level1" disabled required><option value="">Select a country first</option></select><span class="field-error"></span></div>
+          <div class="field field-wide"><label for="phone">Phone <span class="form-note">optional</span></label><div class="phone-input"><div class="dial-code-control"><span class="dial-code-flag fi fi-ng" data-dial-code-flag aria-hidden="true"></span><select id="phone-code" name="phoneCountry" aria-label="International dialling code" autocomplete="tel-country-code"><option value="">Code</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode} selected={country.code === defaultPhoneCountry}>{country.code} {country.dialCode}</option>)}</select></div><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-error" /></div><span class="field-error" id="phone-error"></span></div>
+          <div class="field"><label for="country">Country</label><select id="country" name="country" autocomplete="country" required><option value="">Select country</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode} selected={country.code === defaultPhoneCountry}>{country.name}</option>)}</select><span class="field-error"></span></div>
+          <div class="field"><label for="state">State</label><select id="state" name="state" autocomplete="address-level1" required><option value="">Select state</option>{statesByCountry.NG.map((state) => <option value={state.code}>{state.name}</option>)}<option value="other">Other or not listed</option></select><span class="field-error"></span></div>
           <div class="field"><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" required /><span class="field-error"></span></div>
           <div class="field"><label for="location">Project location</label><input id="location" name="projectLocation" autocomplete="street-address" required /><span class="field-error"></span></div>
           <div class="field"><label for="land">Land ownership</label><select id="land" name="landOwnership" required><option value="">Select status</option><option>Yes, land secured</option><option>No</option><option>Under consideration</option><option>Not applicable</option></select><span class="field-error"></span></div>
@@ -87,6 +87,17 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
       const countryCode = dialCode?.value.toLowerCase();
       if (dialCodeFlag) dialCodeFlag.className = countryCode ? `dial-code-flag fi fi-${countryCode}` : 'dial-code-flag';
     };
+    const resetLocationDefaults = () => {
+      if (country) country.value = 'NG';
+      if (dialCode) dialCode.value = 'NG';
+      if (state) {
+        state.innerHTML = '<option value="">Select state</option>';
+        (locationData.NG || []).forEach((item) => state.add(new Option(item.name, item.code)));
+        state.add(new Option('Other or not listed', 'other'));
+        state.disabled = false;
+      }
+      updateDialCodeFlag();
+    };
 
     country?.addEventListener('change', () => {
       const states = locationData[country.value] || [];
@@ -126,8 +137,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
         const status = form.querySelector<HTMLElement>('.form-status');
         if (status) status.textContent = `Thank you. Your ${selectedService?.value.toLowerCase()} enquiry is ready to route to the correct team once the final form endpoint is connected.`;
         form.reset();
-        if (state) { state.disabled = true; state.innerHTML = '<option value="">Select a country first</option>'; }
-        updateDialCodeFlag();
+        resetLocationDefaults();
       }
     });
   </script>
