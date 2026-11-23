@@ -1,20 +1,124 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Country, State } from 'country-state-city';
+import { getCountryCallingCode, type CountryCode } from 'libphonenumber-js';
+
 const services = ['Architecture & design','Construction','Property development','Project management','Investment & partnerships'];
+const dialCodeFor = (isoCode: string, fallback: string) => {
+  try { return `+${getCountryCallingCode(isoCode as CountryCode)}`; }
+  catch { return fallback.startsWith('+') ? fallback : `+${fallback.split(/\s|and/)[0]}`; }
+};
+const countries = Country.getAllCountries()
+  .map((country) => ({
+    code: country.isoCode,
+    name: country.name,
+    dialCode: dialCodeFor(country.isoCode, country.phonecode),
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+const statesByCountry = Object.fromEntries(
+  countries.map((country) => [country.code, State.getStatesOfCountry(country.code).map((state) => ({ code: state.isoCode, name: state.name }))]),
+);
+const serializedStates = JSON.stringify(statesByCountry).replaceAll('<', '\\u003c');
+const earliestStartDate = new Date().toISOString().slice(0, 10);
 ---
 <BaseLayout title="Request a Consultation — TH Homes" description="Tell TH Homes about your architecture, construction or property development project.">
   <section class="page-hero page-hero-video consultation-hero"><video data-ambient-video muted loop playsinline preload="metadata" poster="/videos/posters/planning.webp" aria-label="Architectural consultation and project planning"><source src="/videos/consultation.mp4" type="video/mp4" /></video><div class="page-hero-inner"><h1>Tell us what you want to build.</h1><p>A considered brief helps us route your enquiry to the right team and prepare for a useful first conversation.</p></div><span class="hero-media-note">Your brief · Our first conversation</span></section>
-  <section class="section"><div class="section-inner split-page"><aside class="page-copy" data-reveal><h2>A better first meeting starts here.</h2><p>Share what you know today. You do not need a finished brief or complete drawings. We will use this information to understand fit, location, timing and the expertise your project needs.</p><div class="contact-card"><h3>What happens next</h3><p>We review the brief, route it to the relevant service team and contact you to arrange the appropriate next conversation.</p></div></aside><form data-consultation-form data-reveal novalidate><div class="form-grid"><fieldset class="field-wide" style="border:0;padding:0;margin:0"><legend class="fieldset-label">What do you need help with?</legend><div class="radio-group">{services.map((service, index) => <div class="radio-option"><input id={`service-${index}`} type="radio" name="service" value={service} required /><label for={`service-${index}`}>{service}</label></div>)}</div><span class="field-error" data-service-error></span></fieldset><div class="field"><label for="full-name">Full name</label><input id="full-name" name="fullName" autocomplete="name" required /><span class="field-error"></span></div><div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required /><span class="field-error"></span></div><div class="field"><label for="phone">Phone <span class="form-note">optional</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+234" /><span class="field-error"></span></div><div class="field"><label for="country">Country</label><select id="country" name="country" autocomplete="country-name" required><option value="">Select country</option><option>Nigeria</option><option>United Kingdom</option><option>United Arab Emirates</option><option>United States</option><option>Canada</option><option>Ghana</option><option>South Africa</option><option>Other</option></select><span class="field-error"></span></div><div class="field"><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" required /><span class="field-error"></span></div><div class="field"><label for="location">Project location</label><input id="location" name="projectLocation" autocomplete="street-address" required /><span class="field-error"></span></div><div class="field"><label for="land">Land ownership</label><select id="land" name="landOwnership" required><option value="">Select status</option><option>Yes, land secured</option><option>No</option><option>Under consideration</option><option>Not applicable</option></select><span class="field-error"></span></div><div class="field"><label for="budget">Estimated budget</label><select id="budget" name="budget" required><option value="">Select a range</option><option>Under ₦100 million</option><option>₦100–250 million</option><option>₦250–500 million</option><option>₦500 million–₦1 billion</option><option>Over ₦1 billion</option><option>Other currency / to be discussed</option></select><span class="field-error"></span></div><div class="field field-wide"><label for="start">Expected project commencement</label><input id="start" name="startDate" type="month" required /><span class="field-error"></span></div><div class="field field-wide"><label for="description">Project description</label><textarea id="description" name="description" minlength="40" required placeholder="Describe the site, intended use, scale and what success looks like for you."></textarea><span class="field-error"></span></div></div><div class="form-actions"><p class="form-note">Your information will only be used to assess and respond to this enquiry.</p><button class="button" type="submit">Send project brief</button></div><p class="form-status" role="status" aria-live="polite"></p></form></div></section>
+
+  <section class="section">
+    <div class="section-inner split-page">
+      <aside class="page-copy" data-reveal><h2>A better first meeting starts here.</h2><p>Share what you know today. You do not need a finished brief or complete drawings. We will use this information to understand fit, location, timing and the expertise your project needs.</p><div class="contact-card"><h3>What happens next</h3><p>We review the brief, route it to the relevant service team and contact you to arrange the appropriate next conversation.</p></div></aside>
+      <form data-consultation-form data-reveal novalidate>
+        <div class="form-grid">
+          <fieldset class="field-wide form-fieldset"><legend class="fieldset-label">What do you need help with?</legend><div class="radio-group">{services.map((service, index) => <div class="radio-option"><input id={`service-${index}`} type="radio" name="service" value={service} required /><label for={`service-${index}`}>{service}</label></div>)}</div><span class="field-error" data-service-error></span></fieldset>
+          <div class="field"><label for="full-name">Full name</label><input id="full-name" name="fullName" autocomplete="name" required /><span class="field-error"></span></div>
+          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="email-error" required /><span class="field-error" id="email-error"></span></div>
+          <div class="field field-wide"><label for="phone">Phone <span class="form-note">optional</span></label><div class="phone-input"><select id="phone-code" name="phoneCode" aria-label="International dialling code"><option value="">Code</option>{countries.map((country) => <option value={country.dialCode} data-country-code={country.code}>{country.code} {country.dialCode}</option>)}</select><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-error" /></div><span class="field-error" id="phone-error"></span></div>
+          <div class="field"><label for="country">Country</label><select id="country" name="country" autocomplete="country" required><option value="">Select country</option>{countries.map((country) => <option value={country.code} data-dial-code={country.dialCode}>{country.name}</option>)}</select><span class="field-error"></span></div>
+          <div class="field"><label for="state">State or region</label><select id="state" name="state" autocomplete="address-level1" disabled required><option value="">Select a country first</option></select><span class="field-error"></span></div>
+          <div class="field"><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" required /><span class="field-error"></span></div>
+          <div class="field"><label for="location">Project location</label><input id="location" name="projectLocation" autocomplete="street-address" required /><span class="field-error"></span></div>
+          <div class="field"><label for="land">Land ownership</label><select id="land" name="landOwnership" required><option value="">Select status</option><option>Yes, land secured</option><option>No</option><option>Under consideration</option><option>Not applicable</option></select><span class="field-error"></span></div>
+          <div class="field"><label for="budget">Estimated budget</label><select id="budget" name="budget" required><option value="">Select a range</option><option>Under ₦100 million</option><option>₦100–250 million</option><option>₦250–500 million</option><option>₦500 million–₦1 billion</option><option>Over ₦1 billion</option><option>Other currency / to be discussed</option></select><span class="field-error"></span></div>
+          <div class="field field-wide"><label for="start">Expected project commencement</label><input id="start" name="startDate" type="date" min={earliestStartDate} autocomplete="off" required /><span class="form-note">The date follows your device’s regional format.</span><span class="field-error"></span></div>
+          <div class="field field-wide"><label for="description">Project description</label><textarea id="description" name="description" minlength="40" required placeholder="Describe the site, intended use, scale and what success looks like for you."></textarea><span class="field-error"></span></div>
+        </div>
+        <div class="form-actions"><p class="form-note">Your information will only be used to assess and respond to this enquiry.</p><button class="button" type="submit">Send project brief</button></div><p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <script id="location-data" type="application/json" set:html={serializedStates}></script>
   <script>
+    import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
     const form = document.querySelector<HTMLFormElement>('[data-consultation-form]');
+    const country = form?.querySelector<HTMLSelectElement>('#country');
+    const state = form?.querySelector<HTMLSelectElement>('#state');
+    const dialCode = form?.querySelector<HTMLSelectElement>('#phone-code');
+    const phone = form?.querySelector<HTMLInputElement>('#phone');
+    const email = form?.querySelector<HTMLInputElement>('#email');
+    const locationData = JSON.parse(document.querySelector('#location-data')?.textContent || '{}') as Record<string, Array<{ code: string; name: string }>>;
+    const commonDomainCorrections: Record<string, string> = { 'gmal.com':'gmail.com', 'gmial.com':'gmail.com', 'gmail.con':'gmail.com', 'yahooo.com':'yahoo.com', 'yahoo.con':'yahoo.com', 'hotnail.com':'hotmail.com', 'outlook.con':'outlook.com' };
+
+    const setError = (field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, message: string) => {
+      const error = field.closest('.field')?.querySelector<HTMLElement>('.field-error');
+      if (error) error.textContent = message;
+      field.setAttribute('aria-invalid', String(Boolean(message)));
+    };
+    const emailError = () => {
+      if (!email?.value) return 'Please complete this field.';
+      if (!email.validity.valid || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value)) return 'Enter a complete email address, such as name@example.com.';
+      const [local, domain = ''] = email.value.toLowerCase().split('@');
+      const correction = commonDomainCorrections[domain];
+      return correction ? `That email domain looks incorrect. Did you mean ${local}@${correction}?` : '';
+    };
+    const phoneError = () => {
+      if (!phone?.value.trim()) return '';
+      const parsed = parsePhoneNumberFromString(`${dialCode?.value || ''}${phone.value.replace(/^0+/, '')}`);
+      return parsed?.isValid() ? '' : 'Enter a valid phone number for the selected international code.';
+    };
+    const validateEmail = () => { if (email) setError(email, emailError()); };
+    const validatePhone = () => { if (phone) setError(phone, phoneError()); };
+
+    country?.addEventListener('change', () => {
+      const states = locationData[country.value] || [];
+      if (state) {
+        state.innerHTML = '<option value="">Select state or region</option>';
+        states.forEach((item) => state.add(new Option(item.name, item.code)));
+        state.add(new Option('Other or not listed', 'other'));
+        state.disabled = false;
+      }
+      const selected = country.selectedOptions[0];
+      if (dialCode && selected?.dataset.dialCode) dialCode.value = selected.dataset.dialCode;
+      validatePhone();
+    });
+    email?.addEventListener('blur', validateEmail);
+    email?.addEventListener('input', () => { if (email.getAttribute('aria-invalid') === 'true') validateEmail(); });
+    phone?.addEventListener('blur', validatePhone);
+    dialCode?.addEventListener('change', validatePhone);
+
     form?.addEventListener('submit', (event) => {
-      event.preventDefault(); let valid = true;
+      event.preventDefault();
+      let valid = true;
       const selectedService = form.querySelector<HTMLInputElement>('input[name="service"]:checked');
       const serviceError = form.querySelector<HTMLElement>('[data-service-error]');
       if (serviceError) serviceError.textContent = selectedService ? '' : 'Select the service closest to your enquiry.';
       if (!selectedService) valid = false;
-      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('[required]:not([type="radio"])').forEach((field) => { const error = field.parentElement?.querySelector<HTMLElement>('.field-error'); const message = field.validity.valueMissing ? 'Please complete this field.' : field.validity.typeMismatch ? 'Enter a valid email address.' : field.validity.tooShort ? 'Please provide at least 40 characters.' : ''; if (error) error.textContent = message; field.setAttribute('aria-invalid', String(Boolean(message))); if (message) valid = false; });
-      if (valid) { const status = form.querySelector<HTMLElement>('.form-status'); if (status) status.textContent = `Thank you. Your ${selectedService?.value.toLowerCase()} enquiry is ready to route to the correct team once the final form endpoint is connected.`; form.reset(); }
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('[required]:not([type="radio"])').forEach((field) => {
+        let message = field.validity.valueMissing ? 'Please complete this field.' : field.validity.typeMismatch ? 'Enter a valid email address.' : field.validity.tooShort ? 'Please provide at least 40 characters.' : '';
+        if (field === email) message = emailError();
+        setError(field, message);
+        if (message) valid = false;
+      });
+      const phoneMessage = phoneError();
+      if (phone) setError(phone, phoneMessage);
+      if (phoneMessage) valid = false;
+      if (valid) {
+        const status = form.querySelector<HTMLElement>('.form-status');
+        if (status) status.textContent = `Thank you. Your ${selectedService?.value.toLowerCase()} enquiry is ready to route to the correct team once the final form endpoint is connected.`;
+        form.reset();
+        if (state) { state.disabled = true; state.innerHTML = '<option value="">Select a country first</option>'; }
+      }
     });
   </script>
 </BaseLayout>
