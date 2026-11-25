@@ -8,13 +8,22 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check": "astro check",
+    "test": "node --test --experimental-strip-types tests/*.test.ts",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^11.1.14",
     "astro": "^7.4.13",
     "country-state-city": "^3.2.1",
     "flag-icons": "^7.6.0",
-    "libphonenumber-js": "^1.13.17"
+    "libphonenumber-js": "^1.13.17",
+    "nodemailer": "^10.6.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/nodemailer": "^8.0.2",
+    "typescript": "^6.0.3"
   }
 }

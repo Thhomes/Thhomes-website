@@ -30,6 +30,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
     <div class="section-inner split-page">
       <aside class="page-copy" data-reveal><h2>A better first meeting starts here.</h2><p>Share what you know today. You do not need a finished brief or complete drawings. We will use this information to understand fit, location, timing and the expertise your project needs.</p><div class="contact-card"><h3>What happens next</h3><p>We review the brief, route it to the relevant service team and contact you to arrange the appropriate next conversation.</p></div></aside>
       <form data-consultation-form data-reveal novalidate>
+        <input class="form-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <div class="form-grid">
           <fieldset class="field-wide form-fieldset"><legend class="fieldset-label">What do you need help with?</legend><div class="radio-group">{services.map((service, index) => <div class="radio-option"><input id={`service-${index}`} type="radio" name="service" value={service} required /><label for={`service-${index}`}>{service}</label></div>)}</div><span class="field-error" data-service-error></span></fieldset>
           <div class="field"><label for="full-name">Full name</label><input id="full-name" name="fullName" autocomplete="name" required /><span class="field-error"></span></div>
@@ -44,7 +45,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
           <div class="field field-wide"><label for="start">Expected project commencement</label><input id="start" name="startDate" type="date" min={earliestStartDate} autocomplete="off" required /><span class="form-note">The date follows your device’s regional format.</span><span class="field-error"></span></div>
           <div class="field field-wide"><label for="description">Project description</label><textarea id="description" name="description" minlength="40" required placeholder="Describe the site, intended use, scale and what success looks like for you."></textarea><span class="field-error"></span></div>
         </div>
-        <div class="form-actions"><p class="form-note">Your information will only be used to assess and respond to this enquiry.</p><button class="button" type="submit">Send project brief</button></div><p class="form-status" role="status" aria-live="polite"></p>
+        <div class="form-actions"><p class="form-note">Your information will only be used to assess and respond to this enquiry.</p><button class="button" type="submit" data-submit-label="Send project brief">Send project brief</button></div><p class="form-status" role="status" aria-live="polite"></p>
       </form>
     </div>
   </section>
@@ -121,7 +122,7 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
     phone?.addEventListener('blur', validatePhone);
     dialCode?.addEventListener('change', () => { updateDialCodeFlag(); validatePhone(); });
 
-    form?.addEventListener('submit', (event) => {
+    form?.addEventListener('submit', async (event) => {
       event.preventDefault();
       let valid = true;
       const selectedService = form.querySelector<HTMLInputElement>('input[name="service"]:checked');
@@ -137,11 +138,23 @@ const earliestStartDate = new Date().toISOString().slice(0, 10);
       const phoneMessage = phoneError();
       if (phone) setError(phone, phoneMessage);
       if (phoneMessage) valid = false;
-      if (valid) {
-        const status = form.querySelector<HTMLElement>('.form-status');
-        if (status) status.textContent = `Thank you. Your ${selectedService?.value.toLowerCase()} enquiry is ready to route to the correct team once the final form endpoint is connected.`;
+      if (!valid) return;
+      const status = form.querySelector<HTMLElement>('.form-status');
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (status) { status.textContent = ''; status.removeAttribute('data-error'); }
+      if (button) { button.disabled = true; button.textContent = 'Sending…'; }
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch('/api/enquiries', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'consultation', ...payload }) });
+        const result = await response.json() as { message?: string; reference?: string };
+        if (!response.ok || !result.reference) throw new Error(result.message || 'Unable to send your project brief.');
+        if (status) status.textContent = `Thank you. Your enquiry has been sent. Your reference is ${result.reference}, and a confirmation has been emailed to you.`;
         form.reset();
         resetLocationDefaults();
+      } catch (error) {
+        if (status) { status.textContent = error instanceof Error ? error.message : 'Unable to send your project brief. Please try again.'; status.setAttribute('data-error', ''); }
+      } finally {
+        if (button) { button.disabled = false; button.textContent = button.dataset.submitLabel || 'Send project brief'; }
       }
     });
   </script>
