@@ -15,7 +15,6 @@ export default defineConfig({
       MAIL_FROM_NAME: envField.string({ context: 'server', access: 'secret', default: 'TH Homes Projects' }),
       MAIL_FROM_ADDRESS: envField.string({ context: 'server', access: 'secret', optional: true }),
       MAIL_TO_ADDRESS: envField.string({ context: 'server', access: 'secret', optional: true }),
-      MAIL_REPLY_TO_ADDRESS: envField.string({ context: 'server', access: 'secret', optional: true }),
       MAIL_ASSET_BASE_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
     },
   },

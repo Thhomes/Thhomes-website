@@ -76,4 +76,6 @@ test('escapes submitted content in the HTML email', () => {
   });
   assert.doesNotMatch(email.html, /<script>/);
   assert.match(email.html, /&lt;script&gt;/);
+  assert.match(email.html, /please do not reply to this email/i);
+  assert.match(email.text, /please do not reply to this email/i);
 });

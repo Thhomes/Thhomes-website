@@ -21,7 +21,7 @@ const displayLocation = (enquiry: Enquiry) => enquiry.type === 'contact'
 
 const emailShell = (content: string, logoUrl: string, preview: string) => `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${escapeHtml(preview)}</title></head>
-<body style="margin:0;padding:0;background:#eeeae2;color:#1c2738;font-family:Helvetica,sans-serif;">
+<body style="margin:0;padding:0;background:#eeeae2;color:#1c2738;font-family:sans-serif;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(preview)}</div>
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#eeeae2;"><tr><td align="center" style="padding:40px 16px;">
 <table role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:640px;background:#fff;">
@@ -42,7 +42,7 @@ export function customerConfirmationTemplate({ enquiry, reference, logoUrl }: Te
 <h1 style="max-width:500px;margin:0 0 22px;color:#09172d;font-family:Georgia,'Times New Roman',serif;font-size:38px;font-weight:normal;line-height:1.14;letter-spacing:-.02em;">We’ve received your enquiry.</h1>
 <p style="margin:0 0 18px;color:#3e4858;font-size:16px;line-height:1.75;">Hello ${escapeHtml(name)},</p>
 <p style="margin:0 0 18px;color:#3e4858;font-size:16px;line-height:1.75;">Thank you for contacting TH Homes Projects. Your ${escapeHtml(enquiryDescription)} has been received and will be reviewed by our team.</p>
-<p style="margin:0;color:#3e4858;font-size:16px;line-height:1.75;">We’ll contact you using the details you provided. If you need to add anything, simply reply to this email.</p>
+<p style="margin:0;color:#3e4858;font-size:16px;line-height:1.75;">We’ll contact you using the details you provided. This is an automated confirmation from an unmonitored inbox, so please do not reply to this email.</p>
 </td></tr><tr><td style="padding:10px 44px 42px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#f7f4ed;border:1px solid #ded7c8;">
 <tr><td colspan="2" style="padding:22px 24px 16px;color:#09172d;font-size:14px;font-weight:bold;">Enquiry summary</td></tr>
 ${summaryRows}
@@ -51,7 +51,7 @@ ${summaryRows}
   return {
     subject: `We’ve received your enquiry — ${reference}`,
     html: emailShell(content, logoUrl, 'Your enquiry has been received by TH Homes Projects.'),
-    text: `Hello ${name},\n\nThank you for contacting TH Homes Projects. We received your ${enquiryDescription}.\n\nReference: ${reference}\n${enquiry.type === 'consultation' ? `Project location: ${displayLocation(enquiry)}\n` : ''}\nOur team will review your enquiry and contact you using the details provided. If you need to add anything, reply to this email.\n\nTH Homes Projects\nTelephone: 0810 830 2395\nWhatsApp: 0816 633 8805\nPlot 1004, No. 9 Kofi Annan Street, Asokoro`,
+    text: `Hello ${name},\n\nThank you for contacting TH Homes Projects. We received your ${enquiryDescription}.\n\nReference: ${reference}\n${enquiry.type === 'consultation' ? `Project location: ${displayLocation(enquiry)}\n` : ''}\nOur team will review your enquiry and contact you using the details provided. This is an automated confirmation from an unmonitored inbox, so please do not reply to this email.\n\nTH Homes Projects\nTelephone: 0810 830 2395\nWhatsApp: 0816 633 8805\nPlot 1004, No. 9 Kofi Annan Street, Asokoro`,
   };
 }
 

@@ -3,7 +3,6 @@ import {
   MAIL_ASSET_BASE_URL,
   MAIL_FROM_ADDRESS,
   MAIL_FROM_NAME,
-  MAIL_REPLY_TO_ADDRESS,
   MAIL_TO_ADDRESS,
   SMTP_APP_PASSWORD,
   SMTP_HOST,
@@ -17,7 +16,6 @@ import { customerConfirmationTemplate, internalNotificationTemplate } from './em
 type MailConfiguration = {
   fromAddress: string;
   recipientAddress: string;
-  replyToAddress: string;
   logoUrl: string;
 };
 
@@ -26,11 +24,10 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 function requiredConfiguration(): MailConfiguration {
   const fromAddress = MAIL_FROM_ADDRESS || SMTP_USER;
   const recipientAddress = MAIL_TO_ADDRESS;
-  const replyToAddress = MAIL_REPLY_TO_ADDRESS || recipientAddress;
-  if (!SMTP_USER || !SMTP_APP_PASSWORD || !fromAddress || !recipientAddress || !replyToAddress || !MAIL_ASSET_BASE_URL) {
+  if (!SMTP_USER || !SMTP_APP_PASSWORD || !fromAddress || !recipientAddress || !MAIL_ASSET_BASE_URL) {
     throw new Error('SMTP email delivery is not fully configured.');
   }
-  if (![SMTP_USER, fromAddress, recipientAddress, replyToAddress].every((value) => emailPattern.test(value))) {
+  if (![SMTP_USER, fromAddress, recipientAddress].every((value) => emailPattern.test(value))) {
     throw new Error('SMTP email delivery contains an invalid email address.');
   }
 
@@ -47,7 +44,6 @@ function requiredConfiguration(): MailConfiguration {
   return {
     fromAddress,
     recipientAddress,
-    replyToAddress,
     logoUrl: new URL('/Images/logo/thhome-white-logo.png', assetBaseUrl).toString(),
   };
 }
@@ -85,9 +81,9 @@ export async function sendEnquiryEmails(enquiry: Enquiry, reference: string) {
   await transporter.sendMail({
     from,
     to: customerAddress,
-    replyTo: config.replyToAddress,
     subject: customer.subject,
     html: customer.html,
     text: customer.text,
+    headers: { 'Auto-Submitted': 'auto-generated' },
   });
 }
