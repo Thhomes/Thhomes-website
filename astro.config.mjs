@@ -1,10 +1,10 @@
 // @ts-check
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 import { defineConfig, envField } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: node({ mode: 'standalone' }),
+  adapter: vercel(),
   env: {
     schema: {
       SMTP_HOST: envField.string({ context: 'server', access: 'secret', default: 'smtp.gmail.com' }),
