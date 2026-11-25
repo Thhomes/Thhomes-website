@@ -23,10 +23,9 @@ npx astro dev stop
 
 ```sh
 npm run build
-node --env-file=.env dist/server/entry.mjs
 ```
 
-Static pages and the server endpoint are generated in `dist/`. Production hosting must run the generated Node server so `/api/enquiries` can deliver form submissions. A hosting platform can supply the same environment variables directly instead of using a local `.env` file.
+The site uses Astro’s Vercel adapter. Static pages and the `/api/enquiries` serverless function are generated in `.vercel/output/`. Configure the variables from `.env.example` in the Vercel project settings for Production, Preview and Development as appropriate.
 
 ## Form email configuration
 
