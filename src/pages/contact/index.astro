@@ -4,10 +4,10 @@ import ArrowIcon from '../../components/ArrowIcon.astro';
 ---
 <BaseLayout title="Contact — TH Homes" description="Contact the TH Homes team in Abuja for general and project enquiries.">
   <section class="page-hero contact-hero"><div class="contact-signal" aria-hidden="true"><span></span><span></span><span></span></div><img class="contact-hero-cutout" src="/Images/optimized/contact-phones-cutout.png" alt="Vintage telephone receivers connected by winding cords" width="1536" height="1024" /><div class="page-hero-inner"><h1>Let’s begin with a clear conversation.</h1><p>For projects, partnerships and general enquiries, contact our Abuja team or send a short message below.</p></div></section>
-  <section class="section"><div class="section-inner split-page"><div data-reveal><div class="contact-card"><h3>Telephone</h3><a href="tel:+2348108302395">0810 830 2395</a></div><div class="contact-card"><h3>WhatsApp</h3><a href="https://wa.me/2348166338805">0816 633 8805</a></div><div class="contact-card"><h3>Abuja office</h3><p>Plot 1004<br />No. 9 Kofi Annan Street<br />Asokoro</p></div><div class="contact-card"><h3>Office hours</h3><p>Monday–Friday<br />09:00–17:00 WAT</p></div></div><form class="contact-form" data-contact-form data-reveal novalidate><div class="contact-form-fields"><div class="form-grid"><div class="field"><label for="contact-name">Full name</label><input id="contact-name" name="name" autocomplete="name" required /><span class="field-error"></span></div><div class="field"><label for="contact-email">Email</label><input id="contact-email" name="email" type="email" autocomplete="email" required /><span class="field-error"></span></div><div class="field field-wide"><label for="contact-subject">Subject</label><select id="contact-subject" name="subject" required><option value="">Select an enquiry type</option><option>General enquiry</option><option>Project enquiry</option><option>Partnership</option><option>Careers</option><option>Press and media</option></select><span class="field-error"></span></div><div class="field field-wide"><label for="contact-message">How can we help?</label><textarea id="contact-message" name="message" required minlength="20"></textarea><span class="field-error"></span></div></div><div class="form-actions"><p class="form-note">By sending this form, you agree that TH Homes may contact you about your enquiry.</p><button class="button" type="submit">Send enquiry</button></div></div><div class="contact-success" role="status" aria-live="polite"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 33.5 26 45l24-27" /></svg><h2>Thank you for reaching out.</h2><p>Your message has been recorded in this website demonstration. The final launch will route it directly to the TH Homes team.</p><button class="text-link" type="button" data-contact-reset>Send another enquiry <ArrowIcon /></button></div></form></div></section>
+  <section class="section"><div class="section-inner split-page"><div data-reveal><div class="contact-card"><h3>Telephone</h3><a href="tel:+2348108302395">0810 830 2395</a></div><div class="contact-card"><h3>WhatsApp</h3><a href="https://wa.me/2348166338805">0816 633 8805</a></div><div class="contact-card"><h3>Abuja office</h3><p>Plot 1004<br />No. 9 Kofi Annan Street<br />Asokoro</p></div><div class="contact-card"><h3>Office hours</h3><p>Monday–Friday<br />09:00–17:00 WAT</p></div></div><form class="contact-form" data-contact-form data-reveal novalidate><input class="form-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" /><div class="contact-form-fields"><div class="form-grid"><div class="field"><label for="contact-name">Full name</label><input id="contact-name" name="name" autocomplete="name" required /><span class="field-error"></span></div><div class="field"><label for="contact-email">Email</label><input id="contact-email" name="email" type="email" autocomplete="email" required /><span class="field-error"></span></div><div class="field field-wide"><label for="contact-subject">Subject</label><select id="contact-subject" name="subject" required><option value="">Select an enquiry type</option><option>General enquiry</option><option>Project enquiry</option><option>Partnership</option><option>Careers</option><option>Press and media</option></select><span class="field-error"></span></div><div class="field field-wide"><label for="contact-message">How can we help?</label><textarea id="contact-message" name="message" required minlength="20"></textarea><span class="field-error"></span></div></div><div class="form-actions"><p class="form-note">By sending this form, you agree that TH Homes may contact you about your enquiry.</p><button class="button" type="submit" data-submit-label="Send enquiry">Send enquiry</button></div><p class="form-status form-error-status" role="alert" data-form-error></p></div><div class="contact-success" role="status" aria-live="polite"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 33.5 26 45l24-27" /></svg><h2>Thank you for reaching out.</h2><p>Your enquiry has been sent to the TH Homes team. Your reference is <strong data-enquiry-reference></strong>. We’ve also emailed a confirmation to you.</p><button class="text-link" type="button" data-contact-reset>Send another enquiry <ArrowIcon /></button></div></form></div></section>
   <script>
     const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
-    form?.addEventListener('submit', (event) => {
+    form?.addEventListener('submit', async (event) => {
       event.preventDefault();
       let valid = true;
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('[required]').forEach((field) => {
@@ -17,7 +17,26 @@ import ArrowIcon from '../../components/ArrowIcon.astro';
         field.setAttribute('aria-invalid', String(Boolean(message)));
         if (message) valid = false;
       });
-      if (valid) { form.setAttribute('data-submitted', ''); form.reset(); form.querySelector<HTMLElement>('[data-contact-reset]')?.focus(); }
+      if (!valid) return;
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const errorStatus = form.querySelector<HTMLElement>('[data-form-error]');
+      if (button) { button.disabled = true; button.textContent = 'Sending…'; }
+      if (errorStatus) errorStatus.textContent = '';
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch('/api/enquiries', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'contact', ...payload }) });
+        const result = await response.json() as { message?: string; reference?: string };
+        if (!response.ok || !result.reference) throw new Error(result.message || 'Unable to send your enquiry.');
+        const reference = form.querySelector<HTMLElement>('[data-enquiry-reference]');
+        if (reference) reference.textContent = result.reference;
+        form.setAttribute('data-submitted', '');
+        form.reset();
+        form.querySelector<HTMLElement>('[data-contact-reset]')?.focus();
+      } catch (error) {
+        if (errorStatus) errorStatus.textContent = error instanceof Error ? error.message : 'Unable to send your enquiry. Please try again.';
+      } finally {
+        if (button) { button.disabled = false; button.textContent = button.dataset.submitLabel || 'Send enquiry'; }
+      }
     });
     form?.querySelector<HTMLButtonElement>('[data-contact-reset]')?.addEventListener('click', () => {
       form.removeAttribute('data-submitted');
